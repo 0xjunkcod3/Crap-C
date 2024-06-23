@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <windows.h>
+
+void GetWindowsVersion()
+{
+    OSVERSIONINFOEX osv;
+    SYSTEM_INFO sysinfo;
+    BOOL booVersionEx;
+
+    ZeroMemory(&sysinfo, sizeof(SYSTEM_INFO));
+    ZeroMemory(&osv, sizeof(OSVERSIONINFOEX));
+
+    osv.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+    if (!(booVersionEx = GetVersionEx((OSVERSIONINFO*)&osv))){
+
+        printf("Windows Version not found\n");
+
+        return;
+
+    }
+    GetSystemInfo(&sysinfo);
+
+    printf("Windows version: %lu.%lu (Build: %lu)\n", osv.dwBuildNumber, osv.dwMajorVersion, osv.dwMinorVersion);
+
+    // Determine Windows type
+
+    if(osv.dwMajorVersion == 10) {
+
+        if (osv.dwMinorVersion == 0) {
+
+            if (osv.wProductType == VER_NT_WORKSTATION) {
+
+                printf("Windows 10\n");
+            }
+            else {
+
+                printf("Windows Server 2016/2019\n");
+
+            }
+        }
+    }
+
+
+}
+void GetHostName()
+ {
+    char hostname[45];
+    DWORD size = sizeof(hostname);
+
+    if (GetComputerName(hostname, &size)){
+
+        printf("Host name is: %s\n", hostname);
+    }
+
+    else {
+
+        printf("Failed to get host name!\n");
+    }
+}
+
+
+int main(void){
+    GetHostName();
+    GetWindowsVersion();
+
+    return 0;
+}
